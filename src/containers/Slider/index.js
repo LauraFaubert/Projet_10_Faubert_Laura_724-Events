@@ -6,36 +6,39 @@ import "./style.scss";
 
 const Slider = () => {
   const { data } = useData();
-  if (!data || !data.focus || data.focus.length === 0){
-    return <div>No events available</div>;
-  }
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState (0);
+ 
 
-  // Tri des événements par date descendante
-  const byDateDesc = data.focus.sort((evtA, evtB) =>
-    new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
-  );
-  // Si byDateDesc est undefined, retourner null ou un loader
-  if(!byDateDesc || byDateDesc.length === 0 ){
-    return null;
-  }
+   // Tri des événements par date croissante
+   const byDateDesc = data?.focus
+   ? data?.focus.sort(
+       (evtA, evtB) => new Date(evtA.date) - new Date(evtB.date)
+     )
+   : [];
+ 
 
-  // Fonction pour passer à la carte suivante
-  const nextCard = () => {
-    setIndex(prevIndex => (prevIndex + 1) % byDateDesc.length);
+   useEffect(() => {
+    // Utilisation de l'effet useEffect pour gérer le changement automatique d'index
+    const interval = setInterval(() => {
+      // Définition d'un intervalle pour changer l'index automatiquement
+      setIndex((current) =>
+        current < byDateDesc.length - 1 ? current + 1 : 0
+      ); // Incrémentation de l'index ou retour au début s'il atteint la fin
+    }, 5000); // Changement toutes les 5 secondes
+    return () => clearInterval(interval); // Nettoyage de l'intervalle lorsque le composant est démonté
+  }, [index, byDateDesc.length]); // Déclenchement de l'effet lorsque l'index ou la longueur des événements change
+
+  const handleOptionChange = (e) => {
+    // Gestion du changement d'option dans la pagination
+    setIndex(parseInt(e.target.value, 10)); // Mise à jour de l'index en fonction de la valeur sélectionnée
   };
 
-  // Utilisation d'un effet pour gérer l'intervalle de changement de slide
-  useEffect(() => {
-    const intervalId = setInterval(nextCard, 5000);
-    return () => clearInterval(intervalId);
-  }, [index, byDateDesc.length]);
 
   return (
     <div className="SlideCardList">
       {byDateDesc?.map((event, idx) => (
         <div
-          key={event.title}
+          key={event.id || `event-${idx}`}
           className={`SlideCard SlideCard--${
             index === idx ? "display" : "hide"
           }`}
@@ -55,11 +58,11 @@ const Slider = () => {
         <div className="SlideCard__pagination">
           {byDateDesc.map((event, radioIdx) => (
             <input
-            key={event.id}
+              key={event.id || `radio-${radioIdx}`}
               type="radio"
               name="radio-button"
               checked={index === radioIdx}
-              onChange={() => setIndex(radioIdx)}
+              onChange={handleOptionChange}
             />
           ))}
         </div>

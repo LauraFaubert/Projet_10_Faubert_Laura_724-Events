@@ -5,6 +5,7 @@ import "./style.scss";
 export const FIELD_TYPES = {
   INPUT_TEXT: 1,
   TEXTAREA: 2,
+  INPUT_EMAIL:3,
 };
 
 const Field = ({ type = FIELD_TYPES.INPUT_TEXT, label, name, placeholder }) => {
@@ -22,6 +23,16 @@ const Field = ({ type = FIELD_TYPES.INPUT_TEXT, label, name, placeholder }) => {
       break;
     case FIELD_TYPES.TEXTAREA:
       component = <textarea name={name} data-testid="field-testid" />;
+      break;
+    case FIELD_TYPES.INPUT_EMAIL: // Nouveau type pour les emails
+      component = (
+        <input
+          type="email"
+          name={name}
+          placeholder={placeholder}
+          data-testid="field-testid"
+        />
+      );
       break;
     default:
       component = (

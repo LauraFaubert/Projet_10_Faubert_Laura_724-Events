@@ -55,7 +55,7 @@ const EventList = () => {
                     date={new Date(event.date)}
                     label={event.type}
                   />
-                )}
+               )}
               </Modal>
             ))}
           </div>
