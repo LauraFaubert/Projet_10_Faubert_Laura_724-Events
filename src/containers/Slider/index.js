@@ -6,33 +6,38 @@ import "./style.scss";
 
 const Slider = () => {
   const { data } = useData();
-  const [index, setIndex] = useState (0);
- 
+  const [index, setIndex] = useState(0);
 
-   // Tri des événements par date croissante
-   const byDateDesc = data?.focus
-   ? data?.focus.sort(
-       (evtA, evtB) => new Date(evtA.date) - new Date(evtB.date)
-     )
-   : [];
- 
+  // Tri des événements par date croissante
+  const byDateDesc = data?.focus
+    ? data?.focus.sort(
+        (evtA, evtB) => new Date(evtA.date) - new Date(evtB.date)
+      )
+    : [];
 
-   useEffect(() => {
-    // Utilisation de l'effet useEffect pour gérer le changement automatique d'index
+  useEffect(() => {
     const interval = setInterval(() => {
-      // Définition d'un intervalle pour changer l'index automatiquement
       setIndex((current) =>
         current < byDateDesc.length - 1 ? current + 1 : 0
-      ); // Incrémentation de l'index ou retour au début s'il atteint la fin
-    }, 5000); // Changement toutes les 5 secondes
-    return () => clearInterval(interval); // Nettoyage de l'intervalle lorsque le composant est démonté
-  }, [index, byDateDesc.length]); // Déclenchement de l'effet lorsque l'index ou la longueur des événements change
+      );
+    }, 5000);
 
-  const handleOptionChange = (e) => {
-    // Gestion du changement d'option dans la pagination
-    setIndex(parseInt(e.target.value, 10)); // Mise à jour de l'index en fonction de la valeur sélectionnée
+    return () => clearInterval(interval);
+  }, [byDateDesc.length]);
+
+  const handleOptionChange = (selectedIndex) => {
+    setIndex(selectedIndex); // Met à jour l'index à la position sélectionnée
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((current) =>
+        current < byDateDesc.length - 1 ? current + 1 : 0
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [index, byDateDesc.length]);
 
   return (
     <div className="SlideCardList">
@@ -62,7 +67,7 @@ const Slider = () => {
               type="radio"
               name="radio-button"
               checked={index === radioIdx}
-              onChange={handleOptionChange}
+              onChange={() => handleOptionChange(radioIdx)}
             />
           ))}
         </div>
