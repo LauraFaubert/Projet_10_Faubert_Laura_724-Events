@@ -29,15 +29,7 @@ const Slider = () => {
     setIndex(selectedIndex); // Met à jour l'index à la position sélectionnée
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((current) =>
-        current < byDateDesc.length - 1 ? current + 1 : 0
-      );
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [index, byDateDesc.length]);
+ 
 
   return (
     <div className="SlideCardList">
